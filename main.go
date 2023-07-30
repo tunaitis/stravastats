@@ -1,6 +1,8 @@
 package main
 
-import "stravalog/commands"
+import (
+	"stravalog/commands"
+)
 
 func main() {
 	commands.Execute()
