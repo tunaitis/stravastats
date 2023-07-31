@@ -26,13 +26,13 @@ func initConfig() {
 		log.Fatal(err)
 	}
 
-	if viper.IsSet("client_id") == false {
-		log.Fatal("client_id wasn't set")
+	if viper.IsSet("clientId") == false {
+		log.Fatal("client id wasn't set")
 	}
 
-	fmt.Printf("client id: %s\n", viper.GetString("client_id"))
-	fmt.Printf("client secred: %s\n\n", viper.GetString("client_secret"))
-
+	if viper.IsSet("clientSecret") == false {
+		log.Fatal("client secret wasn't set")
+	}
 }
 
 func Execute() {
