@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"stravalog/internal/config"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var commands = &cobra.Command{
@@ -14,24 +14,19 @@ var commands = &cobra.Command{
 	Short: "stravastats is a CLI utility to show your personal Strava statistics in the terminal",
 }
 
+type Config struct {
+	Api ApiConfig `mapstructure:"api"`
+}
+
+type ApiConfig struct {
+	ClientId     string
+	ClientSecret string
+}
+
 func initConfig() {
-	fmt.Println("init config")
-
-	viper.SetConfigName("stravastats")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.stravastats")
-	viper.AddConfigPath(".")
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(err)
-	}
-
-	if viper.IsSet("clientId") == false {
-		log.Fatal("client id wasn't set")
-	}
-
-	if viper.IsSet("clientSecret") == false {
-		log.Fatal("client secret wasn't set")
+	_, err := config.ReadConfig()
+	if err != nil {
+		log.Fatalf("ann error has occurred: %s", err)
 	}
 }
 
