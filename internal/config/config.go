@@ -39,5 +39,5 @@ func ReadConfig() (*Config, error) {
 		return nil, errors.New("client secret wasn't set")
 	}
 
-	return nil, nil
+	return config, nil
 }
