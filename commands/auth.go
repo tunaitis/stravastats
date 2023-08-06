@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"stravastats/internal/api"
+	"stravastats/internal/authcode"
 	"stravastats/internal/config"
 
 	"github.com/pkg/browser"
@@ -25,7 +26,7 @@ var authCmd = &cobra.Command{
 
 		browser.OpenURL(authUrl)
 
-		code, err := api.WaitForAuthorizationCode()
+		code, err := authcode.WaitForAuthorizationCode()
 		if err != nil {
 			return err
 		}
