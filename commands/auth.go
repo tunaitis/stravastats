@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"fmt"
+	"stravalog/internal/api"
 	"stravalog/internal/config"
 
 	"github.com/pkg/browser"
@@ -17,7 +17,11 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		var authUrl = fmt.Sprintf("https://www.strava.com/oauth/authorize?client_id=%s&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read", cfg.Api.ClientId)
+		authUrl, err := api.GetAuthUrl(cfg.Api.ClientId)
+		if err != nil {
+			return err
+		}
+
 		browser.OpenURL(authUrl)
 
 		return nil
