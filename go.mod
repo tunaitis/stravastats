@@ -1,4 +1,4 @@
-module stravalog
+module stravastats
 
 go 1.18
 

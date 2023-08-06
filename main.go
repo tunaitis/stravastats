@@ -1,7 +1,7 @@
 package main
 
 import (
-	"stravalog/commands"
+	"stravastats/commands"
 )
 
 func main() {

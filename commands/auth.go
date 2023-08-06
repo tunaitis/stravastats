@@ -1,8 +1,9 @@
 package commands
 
 import (
-	"stravalog/internal/api"
-	"stravalog/internal/config"
+	"fmt"
+	"stravastats/internal/api"
+	"stravastats/internal/config"
 
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
@@ -23,6 +24,13 @@ var authCmd = &cobra.Command{
 		}
 
 		browser.OpenURL(authUrl)
+
+		code, err := api.WaitForAuthorizationCode()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(code)
 
 		return nil
 	},
