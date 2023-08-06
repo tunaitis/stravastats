@@ -24,8 +24,13 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		if code != "" {
-			fmt.Println("You are already authorized. Use -f flag to reauthorize.")
+		reauthorize, err := cmd.Flags().GetBool("reauthorize")
+		if err != nil {
+			return err
+		}
+
+		if code != "" && reauthorize == false {
+			fmt.Println("You are already authorized. Use the -r flag to reauthorize.")
 			return nil
 		}
 
@@ -51,4 +56,5 @@ var authCmd = &cobra.Command{
 
 func init() {
 	commands.AddCommand(authCmd)
+	authCmd.Flags().BoolP("reauthorize", "r", false, "reauthorize the API access")
 }
