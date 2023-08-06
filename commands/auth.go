@@ -24,7 +24,10 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Println(code)
+		if code != "" {
+			fmt.Println("You are already authorized. Use -f flag to reauthorize.")
+			return nil
+		}
 
 		authUrl, err := api.GetAuthUrl(cfg.Api.ClientId)
 		if err != nil {
