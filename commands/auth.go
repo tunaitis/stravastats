@@ -19,6 +19,13 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
+		code, err := authcode.ReadFromStore()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(code)
+
 		authUrl, err := api.GetAuthUrl(cfg.Api.ClientId)
 		if err != nil {
 			return err
@@ -26,10 +33,12 @@ var authCmd = &cobra.Command{
 
 		browser.OpenURL(authUrl)
 
-		code, err := authcode.WaitForAuthorizationCode()
+		code, err = authcode.WaitForAuthorizationCode()
 		if err != nil {
 			return err
 		}
+
+		authcode.SaveToStore(code)
 
 		fmt.Println(code)
 
