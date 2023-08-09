@@ -1,4 +1,4 @@
-package authcode
+package api
 
 import (
 	"context"

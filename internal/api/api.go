@@ -22,3 +22,16 @@ func GetAuthUrl(clientId string) (string, error) {
 
 	return u.String(), nil
 }
+
+func GetTokenUrl() (string, error) {
+	u, err := url.Parse(baseUrl + "/oauth/token")
+	if err != nil {
+		return "", err
+	}
+
+	q := u.Query()
+
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
