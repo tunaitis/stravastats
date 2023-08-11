@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"fmt"
+	"context"
 )
 
 func request() {
@@ -46,4 +48,32 @@ func ExchangeCodeToToken(clientId, clientSecret, code string) (string, string, e
 	}
 
 	return str.AccessToken, str.RefreshToken, nil
+}
+
+func WaitForAuthorizationCode() (string, error) {
+
+	m := http.NewServeMux()
+	s := &http.Server{Addr: ":42001", Handler: m}
+
+	var code = ""
+
+	m.HandleFunc("/exchange_token", func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Fprint(w, "The authorization code has been received. You can now close this window.")
+
+		code = r.URL.Query().Get("code")
+
+		go func() {
+			s.Shutdown(context.Background())
+		}()
+	})
+
+	s.ListenAndServe()
+
+	return code, nil
+}
+
+// https://www.strava.com/api/v3/athlete/activities
+func ListActivities() error {
+	return nil
 }
