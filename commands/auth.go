@@ -51,8 +51,10 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Println(accessToken)
-		fmt.Println(refreshToken)
+		err = keychain.WriteTokens(accessToken, refreshToken)
+		if err != nil {
+			return err
+		}
 
 		return nil
 	},
