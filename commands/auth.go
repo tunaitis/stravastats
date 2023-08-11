@@ -46,7 +46,7 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		accessToken, refreshToken, err = api.ExchangeAuthCodeToToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
+		accessToken, refreshToken, err = api.ExchangeCodeToToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
 		if err != nil {
 			return err
 		}

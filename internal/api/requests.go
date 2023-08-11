@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -11,7 +11,12 @@ func request() {
 
 }
 
-func ExchangeAuthCodeToToken(clientId, clientSecret, code string) (string, string, error) {
+type ExchangeCodeToTokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+func ExchangeCodeToToken(clientId, clientSecret, code string) (string, string, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return "", "", err
@@ -29,12 +34,16 @@ func ExchangeAuthCodeToToken(clientId, clientSecret, code string) (string, strin
 		return "", "", err
 	}
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", "", err
 	}
 
-	fmt.Println(string(respBody))
+	str := &ExchangeCodeToTokenResponse{}
+	err = json.Unmarshal(body, str)
+	if err != nil {
+		return "", "", err
+	}
 
-	return "", "", nil
+	return str.AccessToken, str.RefreshToken, nil
 }
