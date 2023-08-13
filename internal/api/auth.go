@@ -73,7 +73,3 @@ func WaitForAuthorizationCode() (string, error) {
 	return code, nil
 }
 
-// https://www.strava.com/api/v3/athlete/activities
-func ListActivities() error {
-	return nil
-}
