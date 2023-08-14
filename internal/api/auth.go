@@ -13,12 +13,44 @@ func request() {
 
 }
 
-type ExchangeCodeToTokenResponse struct {
+type TokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }
 
-func ExchangeCodeToToken(clientId, clientSecret, code string) (string, string, error) {
+func RefreshAccessToken(clientId, clientSecret, refreshToken string) (string, string, error) {
+	u, err := GetTokenUrl()
+	if err != nil {
+		return "", "", err
+	}
+
+	formData := url.Values{
+		"client_id":     {clientId},
+		"client_secret": {clientSecret},
+		"refresh_token":          {refreshToken},
+		"grant_type":    {"refresh_token"},
+	}
+
+	resp, err := http.PostForm(u, formData)
+	if err != nil {
+		return "", "", err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", "", err
+	}
+
+	str := &TokenResponse{}
+	err = json.Unmarshal(body, str)
+	if err != nil {
+		return "", "", err
+	}
+
+	return str.AccessToken, str.RefreshToken, nil
+}
+
+func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (string, string, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return "", "", err
@@ -41,7 +73,7 @@ func ExchangeCodeToToken(clientId, clientSecret, code string) (string, string, e
 		return "", "", err
 	}
 
-	str := &ExchangeCodeToTokenResponse{}
+	str := &TokenResponse{}
 	err = json.Unmarshal(body, str)
 	if err != nil {
 		return "", "", err
