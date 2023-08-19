@@ -7,19 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"stravastats/internal/models"
 )
 
-func request() {
-
-}
-
-type TokensResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	ExpiresAt    int    `json:"expires_at"`
-}
-
-func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*TokensResponse, error) {
+func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*models.Tokens, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return nil, err
@@ -42,7 +33,7 @@ func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*TokensRes
 		return nil, err
 	}
 
-	tokens := &TokensResponse{}
+	tokens := &models.Tokens{}
 	err = json.Unmarshal(body, tokens)
 	if err != nil {
 		return nil, err
@@ -51,7 +42,7 @@ func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*TokensRes
 	return tokens, nil
 }
 
-func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*TokensResponse, error) {
+func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*models.Tokens, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return nil, err
@@ -74,7 +65,7 @@ func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*TokensResp
 		return nil, err
 	}
 
-	tokens := &TokensResponse{}
+	tokens := &models.Tokens{}
 	err = json.Unmarshal(body, tokens)
 	if err != nil {
 		return nil, err

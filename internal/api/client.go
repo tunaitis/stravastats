@@ -33,7 +33,9 @@ func Request(resource string) error {
 			return err
 		}
 
-		err = config.SaveTokens(refreshed.AccessToken, refreshed.RefreshToken, refreshed.ExpiresAt)
+		accessToken = refreshed.AccessToken
+
+		err = config.SaveTokens(refreshed)
 		if err != nil {
 			return err
 		}
