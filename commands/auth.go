@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"stravastats/internal/api"
 	"stravastats/internal/config"
-	"stravastats/internal/keychain"
 
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
@@ -19,7 +18,7 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		accessToken, refreshToken, err := keychain.ReadTokens()
+		tokens, err := config.ReadTokens()
 		if err != nil {
 			return err
 		}
@@ -29,7 +28,7 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		if accessToken != "" && refreshToken != "" && reauthorize == false {
+		if tokens.AccessToken != "" && tokens.RefreshToken != "" && reauthorize == false {
 			fmt.Println("You are already authorized. Use the -r flag to reauthorize.")
 			return nil
 		}
@@ -46,12 +45,12 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		tokens, err := api.ExchangeCodeToAccessToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
+		t, err := api.ExchangeCodeToAccessToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
 		if err != nil {
 			return err
 		}
 
-		err = config.SaveTokens(tokens.AccessToken, tokens.RefreshToken, tokens.ExpiresAt)
+		err = config.SaveTokens(t.AccessToken, t.RefreshToken, t.ExpiresAt)
 		if err != nil {
 			return err
 		}
