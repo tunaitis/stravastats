@@ -1,7 +1,6 @@
 package config
 
 import (
-	"stravastats/internal/api"
 	"strconv"
 
 	"github.com/zalando/go-keyring"
@@ -11,10 +10,16 @@ const (
 	serviceName      = "stravastats"
 	accessTokenName  = "accessTokenName"
 	refreshTokenName = "refreshTokenName"
-	expiresAt        = "expiresAt"
+	expiresAtName    = "expiresAt"
 )
 
-func ReadTokens() (*api.TokensResponse, error) {
+type Tokens struct {
+	AccessToken  string
+	RefreshToken string
+	ExpiresAt    int
+}
+
+func ReadTokens() (*Tokens, error) {
 	accessToken, err := keyring.Get(serviceName, accessTokenName)
 	if err != nil && err != keyring.ErrNotFound {
 		return nil, err
@@ -25,7 +30,7 @@ func ReadTokens() (*api.TokensResponse, error) {
 		return nil, err
 	}
 
-	expiresAt, err := keyring.Get(serviceName, expiresAt)
+	expiresAt, err := keyring.Get(serviceName, expiresAtName)
 	if err != nil && err != keyring.ErrNotFound {
 		return nil, err
 	}
@@ -35,25 +40,25 @@ func ReadTokens() (*api.TokensResponse, error) {
 		return nil, err
 	}
 
-	return &api.TokensResponse{
+	return &Tokens{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		ExpiresAt:    expiresAtInt,
 	}, nil
 }
 
-func SaveTokens(tokens *api.TokensResponse) error {
-	err := keyring.Set(serviceName, accessTokenName, tokens.AccessToken)
+func SaveTokens(accessToken string, refreshToken string, expiresAt int) error {
+	err := keyring.Set(serviceName, accessTokenName, accessToken)
 	if err != nil {
 		return err
 	}
 
-	err = keyring.Set(serviceName, refreshTokenName, tokens.RefreshToken)
+	err = keyring.Set(serviceName, refreshTokenName, refreshToken)
 	if err != nil {
 		return err
 	}
 
-	err = keyring.Set(serviceName, expiresAt, strconv.Itoa(tokens.ExpiresAt))
+	err = keyring.Set(serviceName, expiresAtName, strconv.Itoa(expiresAt))
 	if err != nil {
 		return err
 	}

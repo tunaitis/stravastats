@@ -13,6 +13,8 @@ type Config struct {
 type ApiConfig struct {
 	ClientId     string
 	ClientSecret string
+	AccessToken  string
+	RefreshToken string
 }
 
 func ReadConfig() (*Config, error) {
@@ -25,10 +27,11 @@ func ReadConfig() (*Config, error) {
 		return nil, err
 	}
 
-	config := &Config{}
-	err := viper.Unmarshal(&config)
-	if err != nil {
-		return nil, err
+	config := &Config{
+		Api: ApiConfig{
+			ClientId:     viper.GetString("Api.ClientId"),
+			ClientSecret: viper.GetString("Api.ClientSecret"),
+		},
 	}
 
 	if config.Api.ClientId == "" {

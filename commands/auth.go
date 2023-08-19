@@ -46,12 +46,12 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
-		accessToken, refreshToken, err = api.ExchangeCodeToAccessToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
+		tokens, err := api.ExchangeCodeToAccessToken(cfg.Api.ClientId, cfg.Api.ClientSecret, code)
 		if err != nil {
 			return err
 		}
 
-		err = keychain.WriteTokens(accessToken, refreshToken)
+		err = config.SaveTokens(tokens.AccessToken, tokens.RefreshToken, tokens.ExpiresAt)
 		if err != nil {
 			return err
 		}
