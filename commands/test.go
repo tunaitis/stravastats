@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 	"stravastats/internal/api"
-	"stravastats/internal/models"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,9 @@ var testCmd = &cobra.Command{
 	Short: "An empty command for testing",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		activities, err := api.Request[[]models.Activity]("athlete/activities", nil)
+		from := time.Date(2023, 8, 19, 0, 0, 0, 0, time.UTC)
+
+		activities, err := api.GetActivities(from)
 		if err != nil {
 			return err
 		}

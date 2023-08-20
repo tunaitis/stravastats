@@ -1,6 +1,11 @@
 package api
 
-import "net/url"
+import (
+	"net/url"
+	"stravastats/internal/models"
+	"strconv"
+	"time"
+)
 
 const baseAuthUrl = "https://www.strava.com/oauth/"
 
@@ -34,4 +39,47 @@ func GetTokenUrl() (string, error) {
 	u.RawQuery = q.Encode()
 
 	return u.String(), nil
+}
+
+func GetActivities(from time.Time) ([]models.Activity, error) {
+
+	perPage := 200
+
+	getPage := func(page int) ([]models.Activity, error) {
+		query := url.Values{
+			"per_page": {strconv.Itoa(perPage)},
+			"after":    {strconv.FormatInt(from.Unix(), 10)},
+			"page":     {strconv.Itoa(page)},
+		}
+
+		activities, err := Request[[]models.Activity]("athlete/activities", query)
+		if err != nil {
+			return nil, err
+		}
+
+		return activities, nil
+	}
+
+	var activities []models.Activity
+
+	page := 1
+
+	result, err := getPage(page)
+	if err != nil {
+		return nil, err
+	}
+
+	activities = append(activities, result...)
+
+	for len(result) == 200 || err != nil {
+		page += 1
+		result, err = getPage(page)
+		if err != nil {
+			return nil, err
+		}
+
+		activities = append(activities, result...)
+	}
+
+	return activities, nil
 }

@@ -3,6 +3,7 @@ package models
 import "time"
 
 type Activity struct {
+	Id        int       `json:"id"`
 	Name      string    `json:"name"`
 	StartDate time.Time `json:"start_date"`
 	Type      string    `json:"type"`
