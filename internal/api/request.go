@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -12,16 +12,16 @@ import (
 var baseApiUrl = "https://www.strava.com/api/v3/"
 var ErrUnauthorized = &http.ProtocolError{"Unauthorized"}
 
-// https://www.strava.com/api/v3/athlete/activities
-func Request(resource string) error {
+func Request[T interface{}](resource string, query url.Values) (T, error) {
+	var result T
 	tokens, err := config.ReadTokens()
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	cfg, err := config.ReadConfig()
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	accessToken := tokens.AccessToken
@@ -30,32 +30,41 @@ func Request(resource string) error {
 	if expires.Before(time.Now().UTC()) {
 		refreshed, err := RefreshAccessToken(cfg.Api.ClientId, cfg.Api.ClientSecret, tokens.RefreshToken)
 		if err != nil {
-			return err
+			return result, err
 		}
 
 		accessToken = refreshed.AccessToken
 
 		err = config.SaveTokens(refreshed)
 		if err != nil {
-			return err
+			return result, err
 		}
 	}
 
-	resp, err := httpGet(accessToken, resource, "")
+	resp, err := httpGet(accessToken, resource, query)
 	if err != nil {
-		return err
+		return result, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
 
-	return nil
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
 
-func httpGet(accessToken string, resource string, query string) (*http.Response, error) {
+func httpGet(accessToken string, resource string, query url.Values) (*http.Response, error) {
 	u, err := url.Parse(baseApiUrl + resource)
 	if err != nil {
 		return nil, err
+	}
+
+
+	if query != nil {
+		u.RawQuery = query.Encode()
 	}
 
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
@@ -63,7 +72,7 @@ func httpGet(accessToken string, resource string, query string) (*http.Response,
 		return nil, err
 	}
 
-	req.Header.Add("Authorization", "Bearer "+accessToken)
+	req.Header.Add("Authorization", "Bearer " +accessToken)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
