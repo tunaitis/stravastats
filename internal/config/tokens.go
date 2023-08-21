@@ -1,7 +1,7 @@
 package config
 
 import (
-	"stravastats/internal/models"
+	"stravastats/internal/model"
 	"strconv"
 
 	"github.com/zalando/go-keyring"
@@ -14,7 +14,7 @@ const (
 	expiresAtName    = "expiresAt"
 )
 
-func ReadTokens() (*models.Tokens, error) {
+func ReadTokens() (*model.Tokens, error) {
 	accessToken, err := keyring.Get(serviceName, accessTokenName)
 	if err != nil && err != keyring.ErrNotFound {
 		return nil, err
@@ -35,14 +35,14 @@ func ReadTokens() (*models.Tokens, error) {
 		return nil, err
 	}
 
-	return &models.Tokens{
+	return &model.Tokens{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		ExpiresAt:    expiresAtInt,
 	}, nil
 }
 
-func SaveTokens(tokens *models.Tokens) error {
+func SaveTokens(tokens *model.Tokens) error {
 	err := keyring.Set(serviceName, accessTokenName, tokens.AccessToken)
 	if err != nil {
 		return err

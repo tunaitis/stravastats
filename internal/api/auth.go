@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"stravastats/internal/models"
+	"stravastats/internal/model"
 )
 
-func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*models.Tokens, error) {
+func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*model.Tokens, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*models.To
 		return nil, err
 	}
 
-	tokens := &models.Tokens{}
+	tokens := &model.Tokens{}
 	err = json.Unmarshal(body, tokens)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func RefreshAccessToken(clientId, clientSecret, refreshToken string) (*models.To
 	return tokens, nil
 }
 
-func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*models.Tokens, error) {
+func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*model.Tokens, error) {
 	u, err := GetTokenUrl()
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func ExchangeCodeToAccessToken(clientId, clientSecret, code string) (*models.Tok
 		return nil, err
 	}
 
-	tokens := &models.Tokens{}
+	tokens := &model.Tokens{}
 	err = json.Unmarshal(body, tokens)
 	if err != nil {
 		return nil, err

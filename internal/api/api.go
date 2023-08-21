@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/url"
-	"stravastats/internal/models"
+	"stravastats/internal/model"
 	"strconv"
 	"time"
 )
@@ -41,18 +41,18 @@ func GetTokenUrl() (string, error) {
 	return u.String(), nil
 }
 
-func GetActivities(from time.Time) ([]models.Activity, error) {
+func GetActivities(from time.Time) ([]model.Activity, error) {
 
 	perPage := 200
 
-	getPage := func(page int) ([]models.Activity, error) {
+	getPage := func(page int) ([]model.Activity, error) {
 		query := url.Values{
 			"per_page": {strconv.Itoa(perPage)},
 			"after":    {strconv.FormatInt(from.Unix(), 10)},
 			"page":     {strconv.Itoa(page)},
 		}
 
-		activities, err := Request[[]models.Activity]("athlete/activities", query)
+		activities, err := Request[[]model.Activity]("athlete/activities", query)
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +60,7 @@ func GetActivities(from time.Time) ([]models.Activity, error) {
 		return activities, nil
 	}
 
-	var activities []models.Activity
+	var activities []model.Activity
 
 	page := 1
 
