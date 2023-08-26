@@ -60,6 +60,6 @@ var authCmd = &cobra.Command{
 }
 
 func init() {
-	commands.AddCommand(authCmd)
+	rootCmd.AddCommand(authCmd)
 	authCmd.Flags().BoolP("reauthorize", "r", false, "reauthorize the API access")
 }

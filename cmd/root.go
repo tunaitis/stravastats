@@ -9,7 +9,7 @@ import (
 
 var debug bool
 
-var commands = &cobra.Command{
+var rootCmd = &cobra.Command{
 	Use:   "stravastats",
 	Short: "stravastats is a CLI utility to show your personal Strava statistics in the terminal",
 }
@@ -21,9 +21,9 @@ func initConfig() {
 }
 
 func Execute() {
-	commands.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Show debug information")
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Show debug information")
 
-	if err := commands.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
