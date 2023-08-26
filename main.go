@@ -1,9 +1,9 @@
 package main
 
 import (
-	"stravastats/commands"
+	"stravastats/cmd"
 )
 
 func main() {
-	commands.Execute()
+	cmd.Execute()
 }
