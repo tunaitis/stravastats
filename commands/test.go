@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"fmt"
 	"stravastats/internal/api"
+	"stravastats/internal/cache"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -13,14 +13,27 @@ var testCmd = &cobra.Command{
 	Short: "An empty command for testing",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		from := time.Date(2023, 8, 19, 0, 0, 0, 0, time.UTC)
+		cached := cache.GetActivities()
+
+		return nil
+		from := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+		if len(cached) > 0 {
+			from = cached[0].StartDate
+		}
 
 		activities, err := api.GetActivities(from)
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(activities)
+		if len(activities) > 0 {
+			cached = append(cached, activities...)
+		}
+
+		err = cache.SetActivities(cached)
+		if err != nil {
+			return err
+		}
 
 		return nil
 	},
