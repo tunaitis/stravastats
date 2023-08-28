@@ -21,13 +21,19 @@ func GetActivities() ([]model.Activity, error) {
 		return nil, err
 	}
 
+	before := len(cached)
+
 	if len(activities) > 0 {
 		cached = append(cached, activities...)
 	}
 
-	err = cache.SetActivities(cached)
-	if err != nil {
-		return nil, err
+	after := len(cached)
+
+	if after > before {
+		err = cache.SetActivities(cached)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return cached, nil
