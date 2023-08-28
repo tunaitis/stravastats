@@ -15,10 +15,9 @@ var testCmd = &cobra.Command{
 
 		cached := cache.GetActivities()
 
-		return nil
 		from := time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
 		if len(cached) > 0 {
-			from = cached[0].StartDate
+			from = cached[len(cached)-1].StartDate
 		}
 
 		activities, err := api.GetActivities(from)

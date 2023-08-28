@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"encoding/json"
 	"log/slog"
 	"os"
 	"path"
@@ -27,8 +28,12 @@ func createCacheDir() error {
 	return os.MkdirAll(cachePath, 0700)
 }
 
+func getCacheFile() string {
+	return path.Join(getUserCacheDir(), "stravastats", "stravastats.json")
+}
+
 func GetActivities() []model.Activity {
-	file := path.Join(getUserCacheDir(), "stravastats", "stravastats.json")
+	file := getCacheFile()
 
 	slog.Debug("Reading cache", slog.String("file", file))
 
@@ -37,7 +42,22 @@ func GetActivities() []model.Activity {
 		return nil
 	}
 
-	return nil
+	reader, err := os.Open(file)
+	if err != nil {
+		return nil
+	}
+	defer reader.Close()
+
+	var activities []model.Activity
+
+	decoder := json.NewDecoder(reader)
+	err = decoder.Decode(&activities)
+	if err != nil {
+		slog.Debug("An error has occured", slog.String("error", err.Error()))
+		return nil
+	}
+
+	return activities
 }
 
 func SetActivities(activities []model.Activity) error {
@@ -45,6 +65,19 @@ func SetActivities(activities []model.Activity) error {
 	if err != nil {
 		return err
 	}
+
+	file := getCacheFile()
+
+	slog.Debug("Writing cache", slog.String("file", file), slog.Int("count", len(activities)))
+
+	writer, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer writer.Close()
+
+	encoder := json.NewEncoder(writer)
+	encoder.Encode(activities)
 
 	return nil
 }

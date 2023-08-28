@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log/slog"
 	"net/url"
 	"stravastats/internal/model"
 	"strconv"
@@ -52,10 +53,14 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 			"page":     {strconv.Itoa(page)},
 		}
 
+		slog.Debug("Downloading activities", slog.Time("after", from), slog.Int("page", page))
+
 		activities, err := Request[[]model.Activity]("athlete/activities", query)
 		if err != nil {
 			return nil, err
 		}
+
+		slog.Debug("Finished", slog.Int("activities", len(activities)))
 
 		return activities, nil
 	}
