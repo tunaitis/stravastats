@@ -1,6 +1,7 @@
 package service
 
 import (
+	"slices"
 	"stravastats/internal/api"
 	"stravastats/internal/cache"
 	"stravastats/internal/model"
@@ -30,4 +31,20 @@ func GetActivities() ([]model.Activity, error) {
 	}
 
 	return cached, nil
+}
+
+func GetActivityTypes() ([]string, error) {
+	activities, err := GetActivities()
+	if err != nil {
+		return nil, err
+	}
+
+	var types []string
+	for _, a := range activities {
+		if !slices.Contains(types, a.Type) {
+			types = append(types, a.Type)
+		}
+	}
+
+	return types, nil
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"stravastats/internal/service"
 
 	"github.com/spf13/cobra"
@@ -11,10 +12,12 @@ var testCmd = &cobra.Command{
 	Short: "An empty command for testing",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		_, err := service.GetActivities()
+		types, err := service.GetActivityTypes()
 		if err != nil {
 			return err
 		}
+
+		fmt.Println(types)
 
 		return nil
 	},
