@@ -10,3 +10,13 @@ type Activity struct {
 	Distance  float32   `json:"distance"`
 	Effort    float32   `json:"suffer_score"`
 }
+
+type ActivityStats struct {
+	Type     string
+	Distance float32
+}
+
+type Stats struct {
+	Activities map[string]ActivityStats
+	Years      map[int]map[string]ActivityStats
+}

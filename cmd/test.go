@@ -12,12 +12,12 @@ var testCmd = &cobra.Command{
 	Short: "An empty command for testing",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		types, err := service.GetActivityTypes()
+		stats, err := service.GetActivityStats()
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(types)
+		fmt.Println(stats)
 
 		return nil
 	},

@@ -5,6 +5,7 @@ import (
 	"stravastats/internal/api"
 	"stravastats/internal/cache"
 	"stravastats/internal/model"
+	"strings"
 	"time"
 )
 
@@ -39,12 +40,7 @@ func GetActivities() ([]model.Activity, error) {
 	return cached, nil
 }
 
-func GetActivityTypes() ([]string, error) {
-	activities, err := GetActivities()
-	if err != nil {
-		return nil, err
-	}
-
+func GetActivityTypes(activities []model.Activity) ([]string, error) {
 	var types []string
 	for _, a := range activities {
 		if !slices.Contains(types, a.Type) {
@@ -53,4 +49,63 @@ func GetActivityTypes() ([]string, error) {
 	}
 
 	return types, nil
+}
+
+func GetActivityStats() (*model.Stats, error) {
+	activities, err := GetActivities()
+	if err != nil {
+		return nil, err
+	}
+
+	types, err := GetActivityTypes(activities)
+
+	stats := &model.Stats{
+		Activities: make(map[string]model.ActivityStats),
+		Years:      make(map[int]map[string]model.ActivityStats),
+	}
+
+	for _, t := range types {
+		for _, a := range activities {
+			if a.Type == t {
+
+				key := strings.ToLower(t)
+
+				if entry, ok := stats.Activities[key]; ok {
+					entry.Distance = entry.Distance + a.Distance
+					stats.Activities[key] = entry
+				} else {
+					stats.Activities[key] = model.ActivityStats{
+						Type:     t,
+						Distance: a.Distance,
+					}
+				}
+
+				yearKey := a.StartDate.Year()
+
+				if yearEntry, ok := stats.Years[yearKey]; ok {
+
+					if activityEntry, ok := yearEntry[key]; ok {
+						activityEntry.Distance = activityEntry.Distance + a.Distance
+						yearEntry[key] = activityEntry
+					} else {
+						yearEntry[key] = model.ActivityStats{
+							Type:     t,
+							Distance: a.Distance,
+						}
+					}
+
+					stats.Years[yearKey] = yearEntry
+
+				} else {
+					stats.Years[yearKey] = make(map[string]model.ActivityStats)
+					stats.Years[yearKey][key] = model.ActivityStats{
+						Type:     t,
+						Distance: a.Distance,
+					}
+				}
+			}
+		}
+	}
+
+	return stats, nil
 }
