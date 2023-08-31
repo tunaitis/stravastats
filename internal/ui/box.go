@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -32,10 +33,14 @@ func Box(name string, distance float32, duration float32) string {
 		return ""
 	}
 
-	distanceLine := fmt.Sprintf("%.2f km", distance/1000)
-	durationLine := fmt.Sprintf("%.2f h", duration/60/60)
+	lines := []string{
+		fmt.Sprintf("%s %s", icon(name), name),
+		"",
+		fmt.Sprintf("%.2f km", distance/1000),
+		fmt.Sprintf("%.2f h", duration/60/60),
+	}
 
-	content := fmt.Sprintf("%s %s\n\n%s\n%s", icon(name), name, distanceLine, durationLine)
+	content := strings.Join(lines, "\n")
 
 	return style.Render(content)
 }
