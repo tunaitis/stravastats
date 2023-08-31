@@ -26,15 +26,16 @@ func icon(name string) string {
 	return ""
 }
 
-func Box(name string, distance float32) string {
+func Box(name string, distance float32, duration float32) string {
 
 	if distance == 0 {
 		return ""
 	}
 
-	line := fmt.Sprintf("%.2f km", distance/1000)
+	distanceLine := fmt.Sprintf("%.2f km", distance/1000)
+	durationLine := fmt.Sprintf("%.2f h", duration/60/60)
 
-	content := fmt.Sprintf("%s %s\n\n%s", icon(name), name, line)
+	content := fmt.Sprintf("%s %s\n\n%s\n%s", icon(name), name, distanceLine, durationLine)
 
 	return style.Render(content)
 }
