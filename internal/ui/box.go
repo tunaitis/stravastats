@@ -54,7 +54,7 @@ func Box(name string, distance float32, duration float32) string {
 		fmt.Sprintf("%.2f hh", duration/60/60),
 	}
 
-	lw := longestLine(body) + 1
+	lw := longestLine(body) + 2
 
 	alignRight := lipgloss.NewStyle().Width(lw).Align(lipgloss.Right)
 
