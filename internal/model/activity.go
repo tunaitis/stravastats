@@ -9,7 +9,7 @@ type Activity struct {
 	Type      string    `json:"type"`
 	Distance  float32   `json:"distance"`
 	Effort    float32   `json:"suffer_score"`
-	Duration  float32   `json:"elapsed_time"`
+	Duration  float32   `json:"moving_time"`
 }
 
 type ActivityStats struct {
