@@ -32,6 +32,21 @@ func getCacheFile() string {
 	return path.Join(getUserCacheDir(), "stravastats", "stravastats.json")
 }
 
+func RemoveActivities() error {
+	file := getCacheFile()
+
+	slog.Debug("Reading cache", slog.String("file", file))
+
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		slog.Debug("Cache not found", slog.String("file", file))
+		return nil
+	}
+
+	slog.Debug("Removing cache", slog.String("file", file))
+
+	return os.Remove(file)
+}
+
 func GetActivities() []model.Activity {
 	file := getCacheFile()
 
