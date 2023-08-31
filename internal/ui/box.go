@@ -27,20 +27,44 @@ func icon(name string) string {
 	return ""
 }
 
-func Box(name string, distance float32, duration float32) string {
+func longestLine(lines []string) int {
+	l := 0
 
+	for i := range lines {
+		if len(lines[i]) > l {
+			l = len(lines[i])
+		}
+	}
+
+	return l
+}
+
+func Box(name string, distance float32, duration float32) string {
 	if distance == 0 {
 		return ""
 	}
 
-	lines := []string{
+	header := []string{
 		fmt.Sprintf("%s %s", icon(name), name),
 		"",
-		fmt.Sprintf("%.2f km", distance/1000),
-		fmt.Sprintf("%.2f h", duration/60/60),
 	}
 
-	content := strings.Join(lines, "\n")
+	body := []string{
+		fmt.Sprintf("%.2f km", distance/1000),
+		fmt.Sprintf("%.2f hh", duration/60/60),
+	}
+
+	lw := longestLine(body) + 1
+
+	alignRight := lipgloss.NewStyle().Width(lw).Align(lipgloss.Right)
+
+	for i := range body {
+		body[i] = alignRight.Render(body[i])
+	}
+
+	content := strings.Join(header, "\n") + "\n" + strings.Join(body, "\n")
+
+	content = strings.ReplaceAll(content, "hh", "h ")
 
 	return style.Render(content)
 }
