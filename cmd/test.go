@@ -14,7 +14,7 @@ var testCmd = &cobra.Command{
 	Short: "An empty command for testing",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		activities := []string{"ride", "run", "swim"}
+		activities := []string{"ride", "run", "swim", "walk"}
 
 		stats, err := service.GetActivityStats()
 		if err != nil {

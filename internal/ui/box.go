@@ -22,6 +22,8 @@ func icon(name string) string {
 		return "🚴"
 	case "Swim":
 		return "🏊"
+	case "Walk":
+		return "🚶"
 	}
 
 	return ""
