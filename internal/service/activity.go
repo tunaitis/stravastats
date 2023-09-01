@@ -73,12 +73,14 @@ func GetActivityStats() (*model.Stats, error) {
 				if entry, ok := stats.Activities[key]; ok {
 					entry.Distance = entry.Distance + a.Distance
 					entry.Duration = entry.Duration + a.Duration
+					entry.ElevationGain = entry.ElevationGain + a.ElevationGain
 					stats.Activities[key] = entry
 				} else {
 					stats.Activities[key] = model.ActivityStats{
-						Type:     t,
-						Distance: a.Distance,
-						Duration: a.Duration,
+						Type:          t,
+						Distance:      a.Distance,
+						Duration:      a.Duration,
+						ElevationGain: a.ElevationGain,
 					}
 				}
 
@@ -89,12 +91,14 @@ func GetActivityStats() (*model.Stats, error) {
 					if activityEntry, ok := yearEntry[key]; ok {
 						activityEntry.Distance = activityEntry.Distance + a.Distance
 						activityEntry.Duration = activityEntry.Duration + a.Duration
+						activityEntry.ElevationGain = activityEntry.ElevationGain + a.ElevationGain
 						yearEntry[key] = activityEntry
 					} else {
 						yearEntry[key] = model.ActivityStats{
-							Type:     t,
-							Distance: a.Distance,
-							Duration: a.Duration,
+							Type:          t,
+							Distance:      a.Distance,
+							Duration:      a.Duration,
+							ElevationGain: a.ElevationGain,
 						}
 					}
 
@@ -103,9 +107,10 @@ func GetActivityStats() (*model.Stats, error) {
 				} else {
 					stats.Years[yearKey] = make(map[string]model.ActivityStats)
 					stats.Years[yearKey][key] = model.ActivityStats{
-						Type:     t,
-						Distance: a.Distance,
-						Duration: a.Duration,
+						Type:          t,
+						Distance:      a.Distance,
+						Duration:      a.Duration,
+						ElevationGain: a.ElevationGain,
 					}
 				}
 			}

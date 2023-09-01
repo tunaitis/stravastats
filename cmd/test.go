@@ -25,7 +25,7 @@ var testCmd = &cobra.Command{
 
 		for _, k := range activities {
 			if a, ok := stats.Activities[k]; ok {
-				b := ui.Box(a.Type, a.Distance, a.Duration)
+				b := ui.Box(a)
 				line = append(line, b)
 			}
 		}
