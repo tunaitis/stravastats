@@ -41,6 +41,10 @@ func longestLine(lines []string) int {
 	return l
 }
 
+func bodyLine(line string, width int) string {
+	return ""
+}
+
 func Box(name string, distance float32, duration float32) string {
 	if distance == 0 {
 		return ""
@@ -52,21 +56,18 @@ func Box(name string, distance float32, duration float32) string {
 	}
 
 	body := []string{
-		fmt.Sprintf("%.2f km", distance/1000),
-		fmt.Sprintf("%.2f hh", duration/60/60),
+		fmt.Sprintf("Distance %.2f km", distance/1000),
+		fmt.Sprintf("Time %.2f h", duration/60/60),
 	}
 
-	lw := longestLine(body) + 2
+	bodyWidth := longestLine(body)
 
-	alignRight := lipgloss.NewStyle().Width(lw).Align(lipgloss.Right)
-
-	for i := range body {
-		body[i] = alignRight.Render(body[i])
+	body = []string{
+		fmt.Sprintf("Distance %*.*f km", (bodyWidth - len("Distance ") - len(" km") + 2), 2, distance/1000),
+		fmt.Sprintf("Time %*.*f h", (bodyWidth - len("Time ") - len(" h") + 2), 2, duration/60/60),
 	}
 
 	content := strings.Join(header, "\n") + "\n" + strings.Join(body, "\n")
-
-	content = strings.ReplaceAll(content, "hh", "h ")
 
 	return style.Render(content)
 }
