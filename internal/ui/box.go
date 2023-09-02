@@ -48,7 +48,7 @@ func bodyLine(line string, width int) string {
 
 var gap int = 3
 
-func field[T int | float32](name string, unit string, width int, value T) string {
+func prop[T int | float32](name string, unit string, width int, value T) string {
 	nameWidth := len(name) + 1
 	unitWidth := 0
 	if len(unit) > 0 {
@@ -86,25 +86,25 @@ func Box(activity model.ActivityStats) string {
 	}
 
 	body := []string{
-		field("Activities", "", 0, activity.Count),
-		field("Distance", "km", 0, activity.Distance/1000),
-		field("Time", "h", 0, activity.Duration/60/60),
+		prop("Activities", "", 0, activity.Count),
+		prop("Distance", "km", 0, activity.Distance/1000),
+		prop("Time", "h", 0, activity.Duration/60/60),
 	}
 
 	if activity.Type != "Swim" {
-		body = append(body, field("Elev Gain", "m", 0, activity.ElevationGain))
+		body = append(body, prop("Elev Gain", "m", 0, activity.ElevationGain))
 	}
 
 	bodyWidth := longestLine(body)
 
 	body = []string{
-		field("Activities", "", bodyWidth, activity.Count),
-		field("Distance", "km", bodyWidth, activity.Distance/1000),
-		field("Time", "h", bodyWidth, activity.Duration/60/60),
+		prop("Activities", "", bodyWidth, activity.Count),
+		prop("Distance", "km", bodyWidth, activity.Distance/1000),
+		prop("Time", "h", bodyWidth, activity.Duration/60/60),
 	}
 
 	if activity.Type != "Swim" {
-		body = append(body, field("Elev Gain", "m", bodyWidth, activity.ElevationGain))
+		body = append(body, prop("Elev Gain", "m", bodyWidth, activity.ElevationGain))
 	} else {
 		body = append(body, "")
 	}
