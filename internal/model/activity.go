@@ -15,6 +15,7 @@ type Activity struct {
 
 type ActivityStats struct {
 	Type          string
+	Count         int
 	Distance      float32
 	Duration      float32
 	ElevationGain float32

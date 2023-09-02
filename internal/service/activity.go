@@ -74,6 +74,7 @@ func GetActivityStats() (*model.Stats, error) {
 					entry.Distance = entry.Distance + a.Distance
 					entry.Duration = entry.Duration + a.Duration
 					entry.ElevationGain = entry.ElevationGain + a.ElevationGain
+					entry.Count = entry.Count + 1
 					stats.Activities[key] = entry
 				} else {
 					stats.Activities[key] = model.ActivityStats{
@@ -81,6 +82,7 @@ func GetActivityStats() (*model.Stats, error) {
 						Distance:      a.Distance,
 						Duration:      a.Duration,
 						ElevationGain: a.ElevationGain,
+						Count:         1,
 					}
 				}
 
@@ -92,6 +94,7 @@ func GetActivityStats() (*model.Stats, error) {
 						activityEntry.Distance = activityEntry.Distance + a.Distance
 						activityEntry.Duration = activityEntry.Duration + a.Duration
 						activityEntry.ElevationGain = activityEntry.ElevationGain + a.ElevationGain
+						activityEntry.Count = activityEntry.Count + 1
 						yearEntry[key] = activityEntry
 					} else {
 						yearEntry[key] = model.ActivityStats{
@@ -99,6 +102,7 @@ func GetActivityStats() (*model.Stats, error) {
 							Distance:      a.Distance,
 							Duration:      a.Duration,
 							ElevationGain: a.ElevationGain,
+							Count:         1,
 						}
 					}
 
@@ -111,6 +115,7 @@ func GetActivityStats() (*model.Stats, error) {
 						Distance:      a.Distance,
 						Duration:      a.Duration,
 						ElevationGain: a.ElevationGain,
+						Count:         1,
 					}
 				}
 			}
