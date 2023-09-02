@@ -1,19 +1,19 @@
-package ui
+package view
 
 import (
 	"fmt"
+	"os"
 	"stravastats/internal/model"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
-// Add a purple, rectangular border
 var style = lipgloss.NewStyle().
 	PaddingLeft(1).
 	PaddingRight(1).
 	BorderStyle(lipgloss.RoundedBorder())
-	// BorderForeground(lipgloss.Color("63"))
 
 func icon(name string) string {
 	switch name {
@@ -42,13 +42,9 @@ func longestLine(lines []string) int {
 	return l
 }
 
-func bodyLine(line string, width int) string {
-	return ""
-}
+func cardProp[T int | float32](name string, unit string, width int, value T) string {
+	gap := 3
 
-var gap int = 3
-
-func prop[T int | float32](name string, unit string, width int, value T) string {
 	nameWidth := len(name) + 1
 	unitWidth := 0
 	if len(unit) > 0 {
@@ -75,7 +71,7 @@ func prop[T int | float32](name string, unit string, width int, value T) string 
 	return ""
 }
 
-func Box(activity model.ActivityStats) string {
+func card(activity model.ActivityStats) string {
 	if activity.Distance == 0 {
 		return ""
 	}
@@ -86,25 +82,25 @@ func Box(activity model.ActivityStats) string {
 	}
 
 	body := []string{
-		prop("Activities", "", 0, activity.Count),
-		prop("Distance", "km", 0, activity.Distance/1000),
-		prop("Time", "h", 0, activity.Duration/60/60),
+		cardProp("Activities", "", 0, activity.Count),
+		cardProp("Distance", "km", 0, activity.Distance/1000),
+		cardProp("Time", "h", 0, activity.Duration/60/60),
 	}
 
 	if activity.Type != "Swim" {
-		body = append(body, prop("Elev Gain", "m", 0, activity.ElevationGain))
+		body = append(body, cardProp("Elev Gain", "m", 0, activity.ElevationGain))
 	}
 
 	bodyWidth := longestLine(body)
 
 	body = []string{
-		prop("Activities", "", bodyWidth, activity.Count),
-		prop("Distance", "km", bodyWidth, activity.Distance/1000),
-		prop("Time", "h", bodyWidth, activity.Duration/60/60),
+		cardProp("Activities", "", bodyWidth, activity.Count),
+		cardProp("Distance", "km", bodyWidth, activity.Distance/1000),
+		cardProp("Time", "h", bodyWidth, activity.Duration/60/60),
 	}
 
 	if activity.Type != "Swim" {
-		body = append(body, prop("Elev Gain", "m", bodyWidth, activity.ElevationGain))
+		body = append(body, cardProp("Elev Gain", "m", bodyWidth, activity.ElevationGain))
 	} else {
 		body = append(body, "")
 	}
@@ -112,4 +108,38 @@ func Box(activity model.ActivityStats) string {
 	content := strings.Join(header, "\n") + "\n" + strings.Join(body, "\n")
 
 	return style.Render(content)
+}
+
+func AllTime(stats *model.Stats) error {
+	activities := []string{"ride", "run", "swim", "walk"}
+
+	var ri = 0
+	var rw = 0
+	var rows [][]string = [][]string{[]string{}}
+
+	tw, _, err := terminal.GetSize(int(os.Stdin.Fd()))
+	if err != nil {
+		return err
+	}
+
+	for _, k := range activities {
+		if a, ok := stats.Activities[k]; ok {
+			b := card(a)
+			rw = rw + lipgloss.Width(b)
+			if rw > tw {
+				rw = 0
+				rows = append(rows, []string{})
+				ri++
+			}
+
+			rows[ri] = append(rows[ri], b)
+		}
+	}
+
+	for _, r := range rows {
+		x := lipgloss.JoinHorizontal(lipgloss.Bottom, r...)
+		fmt.Println(x)
+	}
+
+	return nil
 }
