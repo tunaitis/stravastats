@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"log/slog"
 	"net/url"
 	"stravastats/internal/model"
 	"strconv"
 	"time"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 const baseAuthUrl = "https://www.strava.com/oauth/"
@@ -43,6 +46,7 @@ func GetTokenUrl() (string, error) {
 }
 
 func GetActivities(from time.Time) ([]model.Activity, error) {
+	pb := progressbar.Default(-1, "Downloading activities...")
 
 	perPage := 200
 
@@ -62,6 +66,8 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 
 		slog.Debug("Finished", slog.Int("activities", len(activities)))
 
+		pb.Add(len(activities))
+
 		return activities, nil
 	}
 
@@ -76,7 +82,7 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 
 	activities = append(activities, result...)
 
-	for len(result) == 200 || err != nil {
+	for len(result) == perPage || err != nil {
 		page += 1
 		result, err = getPage(page)
 		if err != nil {
@@ -85,6 +91,10 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 
 		activities = append(activities, result...)
 	}
+
+	// hide the progress bar and move the cursor one line up
+	pb.Close()
+	fmt.Printf("\033[%dA", 1)
 
 	return activities, nil
 }
