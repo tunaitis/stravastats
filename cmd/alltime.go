@@ -11,9 +11,9 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var testCmd = &cobra.Command{
-	Use:   "test",
-	Short: "An empty command for testing",
+var allTimeCmd = &cobra.Command{
+	Use:   "all-time",
+	Short: "Show all-time stats",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		activities := []string{"ride", "run", "swim", "walk"}
@@ -46,7 +46,6 @@ var testCmd = &cobra.Command{
 			}
 		}
 
-		//x := lipgloss.JoinHorizontal(lipgloss.Bottom, line...)
 		for _, r := range rows {
 			x := lipgloss.JoinHorizontal(lipgloss.Bottom, r...)
 			fmt.Println(x)
@@ -57,5 +56,5 @@ var testCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(testCmd)
+	rootCmd.AddCommand(allTimeCmd)
 }
