@@ -22,6 +22,7 @@ type ActivityStats struct {
 }
 
 type Stats struct {
-	Activities map[string]ActivityStats
-	Years      map[int]map[string]ActivityStats
+	Activities    map[string]ActivityStats
+	Years         map[int]map[string]ActivityStats
+	ActivityTypes []string
 }

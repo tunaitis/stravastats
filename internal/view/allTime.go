@@ -110,9 +110,7 @@ func card(activity model.ActivityStats) string {
 	return style.Render(content)
 }
 
-func AllTime(stats *model.Stats) error {
-	activities := []string{"ride", "run", "swim", "walk"}
-
+func AllTime(stats *model.Stats, activityFilter []string) error {
 	var ri = 0
 	var rw = 0
 	var rows [][]string = [][]string{[]string{}}
@@ -122,7 +120,7 @@ func AllTime(stats *model.Stats) error {
 		return err
 	}
 
-	for _, k := range activities {
+	for _, k := range activityFilter {
 		if a, ok := stats.Activities[k]; ok {
 			b := card(a)
 			rw = rw + lipgloss.Width(b)

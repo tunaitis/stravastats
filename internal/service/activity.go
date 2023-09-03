@@ -60,16 +60,20 @@ func GetActivityStats() (*model.Stats, error) {
 	types, err := GetActivityTypes(activities)
 
 	stats := &model.Stats{
-		Activities: make(map[string]model.ActivityStats),
-		Years:      make(map[int]map[string]model.ActivityStats),
+		Activities:    make(map[string]model.ActivityStats),
+		ActivityTypes: []string{},
+		Years:         make(map[int]map[string]model.ActivityStats),
 	}
 
 	for _, t := range types {
+		key := strings.ToLower(t)
+
+		if !slices.Contains(stats.ActivityTypes, key) {
+			stats.ActivityTypes = append(stats.ActivityTypes, key)
+		}
+
 		for _, a := range activities {
 			if a.Type == t {
-
-				key := strings.ToLower(t)
-
 				if entry, ok := stats.Activities[key]; ok {
 					entry.Distance = entry.Distance + a.Distance
 					entry.Duration = entry.Duration + a.Duration

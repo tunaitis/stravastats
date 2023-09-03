@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	Api ApiConfig `mapstructure:"api"`
+	Api     ApiConfig     `mapstructure:"api"`
+	Display DisplayConfig `mapstructure:"display"`
 }
 
 type ApiConfig struct {
@@ -15,6 +16,11 @@ type ApiConfig struct {
 	ClientSecret string
 	AccessToken  string
 	RefreshToken string
+}
+
+type DisplayConfig struct {
+	Name       string
+	Activities []string
 }
 
 func ReadConfig() (*Config, error) {
@@ -31,6 +37,9 @@ func ReadConfig() (*Config, error) {
 		Api: ApiConfig{
 			ClientId:     viper.GetString("Api.ClientId"),
 			ClientSecret: viper.GetString("Api.ClientSecret"),
+		},
+		Display: DisplayConfig{
+			Activities: viper.GetStringSlice("Display.Activities"),
 		},
 	}
 
