@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
 	"stravastats/internal/config"
 	"stravastats/internal/service"
 	"stravastats/internal/view"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var allTimeCmd = &cobra.Command{
@@ -14,6 +17,11 @@ var allTimeCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := config.ReadConfig()
 		if err != nil {
+			if errors.As(err, &viper.ConfigFileNotFoundError{}) {
+				fmt.Println("Config file not found, run `stravastats init` first.")
+				return nil
+			}
+
 			return err
 		}
 

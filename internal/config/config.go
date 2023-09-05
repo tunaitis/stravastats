@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"stravastats/internal/util"
 
 	"github.com/spf13/viper"
 )
@@ -23,11 +24,25 @@ type DisplayConfig struct {
 	Activities []string
 }
 
-func ReadConfig() (*Config, error) {
+func configureViper() error {
 	viper.SetConfigName("stravastats")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.stravastats")
-	viper.AddConfigPath(".")
+
+	appPath, err := util.GetApplicationDir()
+	if err != nil {
+		return err
+	}
+
+	viper.AddConfigPath(appPath)
+
+	return nil
+}
+
+func ReadConfig() (*Config, error) {
+	err := configureViper()
+	if err != nil {
+		return nil, err
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
@@ -52,4 +67,25 @@ func ReadConfig() (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func SaveConfig(cfg *Config) error {
+	if cfg == nil {
+		return nil
+	}
+
+	err := configureViper()
+	if err != nil {
+		return err
+	}
+
+	viper.Set("Api.ClientId", cfg.Api.ClientId)
+	viper.Set("Api.ClientSecret", cfg.Api.ClientSecret)
+
+	err = viper.WriteConfig()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
