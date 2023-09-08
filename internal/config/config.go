@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"path"
 	"stravastats/internal/util"
 
 	"github.com/spf13/viper"
@@ -24,57 +24,44 @@ type DisplayConfig struct {
 	Activities []string
 }
 
-func configureViper() error {
+func configureViper() (string, error) {
 	viper.SetConfigName("stravastats")
 	viper.SetConfigType("yaml")
 
 	appPath, err := util.GetApplicationDir()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	viper.AddConfigPath(appPath)
 
-	return nil
+	return path.Join(appPath, "stravastats.yaml"), nil
 }
 
-func ReadConfig() (*Config, error) {
-	err := configureViper()
+func ReadConfig() (Config, error) {
+	config := Config{
+		Api:     ApiConfig{},
+		Display: DisplayConfig{},
+	}
+
+	_, err := configureViper()
 	if err != nil {
-		return nil, err
+		return config, err
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		return config, err
 	}
 
-	config := &Config{
-		Api: ApiConfig{
-			ClientId:     viper.GetString("Api.ClientId"),
-			ClientSecret: viper.GetString("Api.ClientSecret"),
-		},
-		Display: DisplayConfig{
-			Activities: viper.GetStringSlice("Display.Activities"),
-		},
-	}
-
-	if config.Api.ClientId == "" {
-		return nil, errors.New("client id wasn't set")
-	}
-
-	if config.Api.ClientSecret == "" {
-		return nil, errors.New("client secret wasn't set")
-	}
+	config.Api.ClientId = viper.GetString("Api.ClientId")
+	config.Api.ClientSecret = viper.GetString("Api.ClientSecret")
+	config.Display.Activities = viper.GetStringSlice("Display.Activities")
 
 	return config, nil
 }
 
-func SaveConfig(cfg *Config) error {
-	if cfg == nil {
-		return nil
-	}
-
-	err := configureViper()
+func SaveConfig(cfg Config) error {
+	cfgPath, err := configureViper()
 	if err != nil {
 		return err
 	}
@@ -82,7 +69,7 @@ func SaveConfig(cfg *Config) error {
 	viper.Set("Api.ClientId", cfg.Api.ClientId)
 	viper.Set("Api.ClientSecret", cfg.Api.ClientSecret)
 
-	err = viper.WriteConfig()
+	err = viper.WriteConfigAs(cfgPath)
 	if err != nil {
 		return err
 	}
