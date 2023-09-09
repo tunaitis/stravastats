@@ -60,3 +60,22 @@ func SaveTokens(tokens *model.Tokens) error {
 
 	return nil
 }
+
+func DeleteTokens() error {
+	err := keyring.Delete(serviceName, accessTokenName)
+	if err != nil {
+		return err
+	}
+
+	err = keyring.Delete(serviceName, refreshTokenName)
+	if err != nil {
+		return err
+	}
+
+	keyring.Delete(serviceName, expiresAtName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -21,7 +21,7 @@ func initConfig() {
 }
 
 func Execute() {
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Show debug information")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "show debug information")
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

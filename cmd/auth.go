@@ -23,6 +23,22 @@ var authCmd = &cobra.Command{
 			return err
 		}
 
+		deleteTokens, err := cmd.Flags().GetBool("delete")
+		if err != nil {
+			return err
+		}
+
+		if deleteTokens {
+			err = config.DeleteTokens()
+			if err != nil {
+				return err
+			}
+
+			fmt.Println("Tokens have been deleted.")
+
+			return nil
+		}
+
 		reauthorize, err := cmd.Flags().GetBool("reauthorize")
 		if err != nil {
 			return err
@@ -62,4 +78,5 @@ var authCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(authCmd)
 	authCmd.Flags().BoolP("reauthorize", "r", false, "reauthorize the API access")
+	authCmd.Flags().BoolP("delete", "d", false, "delete saved tokens from the keyring")
 }
