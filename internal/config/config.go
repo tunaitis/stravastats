@@ -24,6 +24,15 @@ type DisplayConfig struct {
 	Activities []string
 }
 
+func GetConfigPath() (string, error) {
+	appPath, err := util.GetApplicationDir()
+	if err != nil {
+		return "", err
+	}
+
+	return path.Join(appPath, "stravastats.yaml"), nil
+}
+
 func configureViper() (string, error) {
 	viper.SetConfigName("stravastats")
 	viper.SetConfigType("yaml")
