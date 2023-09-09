@@ -48,6 +48,11 @@ func GetTokenUrl() (string, error) {
 func GetActivities(from time.Time) ([]model.Activity, error) {
 	pb := progressbar.Default(-1, "Downloading activities...")
 
+	hideProgress := func() {
+		pb.Close()
+		fmt.Print("\033[1A\033[K")
+	}
+
 	perPage := 200
 
 	getPage := func(page int) ([]model.Activity, error) {
@@ -61,6 +66,7 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 
 		activities, err := Request[[]model.Activity]("athlete/activities", query)
 		if err != nil {
+			hideProgress()
 			return nil, err
 		}
 
@@ -92,9 +98,7 @@ func GetActivities(from time.Time) ([]model.Activity, error) {
 		activities = append(activities, result...)
 	}
 
-	// hide the progress bar and move the cursor one line up
-	pb.Close()
-	fmt.Printf("\033[%dA", 1)
+	hideProgress()
 
 	return activities, nil
 }

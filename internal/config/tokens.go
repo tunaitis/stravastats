@@ -31,9 +31,6 @@ func ReadTokens() (*model.Tokens, error) {
 	}
 
 	expiresAtInt, err := strconv.Atoi(expiresAt)
-	if err != nil {
-		return nil, err
-	}
 
 	return &model.Tokens{
 		AccessToken:  accessToken,
