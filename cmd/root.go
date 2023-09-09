@@ -20,7 +20,8 @@ func initConfig() {
 	}
 }
 
-func Execute() {
+func Execute(version string) {
+	rootCmd.Version = version
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "show debug information")
 
 	if err := rootCmd.Execute(); err != nil {
