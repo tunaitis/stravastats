@@ -10,6 +10,31 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func promptForClientIdAndSecret(cfg *config.Config) error {
+	fmt.Print("Enter Client Id: ")
+	fmt.Scanln(&cfg.Api.ClientId)
+
+	fmt.Print("Enter Client Secret: ")
+	fmt.Scanln(&cfg.Api.ClientSecret)
+
+	fmt.Println()
+
+	if cfg.Api.ClientId == "" {
+		return errors.New("client id can't be empty")
+	}
+
+	if cfg.Api.ClientSecret == "" {
+		return errors.New("client secret can't be empty")
+	}
+
+	err := config.SaveConfig(cfg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var authCmd = &cobra.Command{
 	Use:   "auth",
 	Short: "Authorize stravastats to connect to Strava API on your behalf",
@@ -20,23 +45,7 @@ var authCmd = &cobra.Command{
 		}
 
 		if cfg.Api.ClientId == "" || cfg.Api.ClientSecret == "" {
-			fmt.Print("Enter Client Id: ")
-			fmt.Scanln(&cfg.Api.ClientId)
-
-			fmt.Print("Enter Client Secret: ")
-			fmt.Scanln(&cfg.Api.ClientSecret)
-
-			fmt.Println()
-
-			if cfg.Api.ClientId == "" {
-				return errors.New("client id can't be empty")
-			}
-
-			if cfg.Api.ClientSecret == "" {
-				return errors.New("client secret can't be empty")
-			}
-
-			err = config.SaveConfig(cfg)
+			err = promptForClientIdAndSecret(cfg)
 			if err != nil {
 				return err
 			}

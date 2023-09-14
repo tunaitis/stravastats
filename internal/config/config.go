@@ -47,8 +47,8 @@ func configureViper() (string, error) {
 	return path.Join(appPath, "stravastats.yaml"), nil
 }
 
-func ReadConfig() (Config, error) {
-	config := Config{
+func ReadConfig() (*Config, error) {
+	config := &Config{
 		Api:     ApiConfig{},
 		Display: DisplayConfig{},
 	}
@@ -69,7 +69,7 @@ func ReadConfig() (Config, error) {
 	return config, nil
 }
 
-func SaveConfig(cfg Config) error {
+func SaveConfig(cfg *Config) error {
 	cfgPath, err := configureViper()
 	if err != nil {
 		return err
