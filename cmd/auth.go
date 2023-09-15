@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"stravastats/internal/api"
 	"stravastats/internal/config"
@@ -16,6 +17,10 @@ var authCmd = &cobra.Command{
 		cfg, err := config.ReadConfig()
 		if err != nil {
 			return err
+		}
+
+		if cfg.Api.ClientId == "" || cfg.Api.ClientSecret == "" {
+			return errors.New("client id and secret can't be empty. Run stravastats init to set it.")
 		}
 
 		tokens, err := config.ReadTokens()
