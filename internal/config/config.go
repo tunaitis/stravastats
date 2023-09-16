@@ -38,6 +38,11 @@ func SetValue(config *Config, name string, value string) error {
 		return nil
 	}
 
+	if name == "Display.Activities" {
+		config.Display.Activities = strings.Split(value, ",")
+		return nil
+	}
+
 	return fmt.Errorf("variable not found: %s", name)
 }
 
@@ -117,6 +122,7 @@ func SaveConfig(cfg Config) error {
 
 	viper.Set("Api.ClientId", cfg.Api.ClientId)
 	viper.Set("Api.ClientSecret", cfg.Api.ClientSecret)
+	viper.Set("Display.Activities", cfg.Display.Activities)
 
 	err = viper.WriteConfigAs(cfgPath)
 	if err != nil {
