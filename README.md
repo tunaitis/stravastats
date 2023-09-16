@@ -32,18 +32,36 @@ stravastats need to authorize with Strava API before receiving any athlete data.
 
 The tokens are then placed in a secure vault and used to access the athlete's personal data later. 
 
-### Create a Strava App
+### Create a Strava application
 
 Sign into your Strava account and go to [https://www.strava.com/settings/api](https://www.strava.com/settings/api). Once there, fill the form with the appropriate values and set the authorization callback domain to localhost. Copy the application id and secret, which you will need in the next step.
 
-### Set application configuration
+### Set configuration variables
 
-Run the following command to initialize the configuration. 
+Run the following command and enter client id and secret when prompted.
 
 ```bash
 $ stravastats init
 ```
 
-When prompted, enter the application id and secret.
+If the configuration file already exists and you want to change a configuration variable, you can use the following command.
 
-### Authenticate
+```bash
+$ stravastats config Api.ClientId <clientId>
+```
+
+```bash
+$ stravastats config Api.ClientSecret <clientSecret>
+```
+
+### Authorize
+
+```bash
+$ stravastats auth
+```
+
+The auth command will open a new browser window where you will be redirected to the Strava OAuth authorisation page. After you have given your consent, Strava will redirect you back to stravastats' internal web server, which will retrieve the passed authorisation code and exchange it for an access token, which will be securely stored in a keychain and used to access the Strava API later. 
+
+
+
+
