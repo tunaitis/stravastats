@@ -49,28 +49,14 @@ var configCmd = &cobra.Command{
 		}
 
 		if len(args) == 2 {
-			changed := false
-
-			if args[0] == "api.clientId" {
-				cfg.Api.ClientId = args[1]
-				changed = true
+			err := config.SetValue(&cfg, args[0], args[1])
+			if err != nil {
+				return err
 			}
-
-			if args[0] == "api.clientSecret" {
-				cfg.Api.ClientSecret = args[1]
-				changed = true
+			err = config.SaveConfig(cfg)
+			if err != nil {
+				return err
 			}
-
-			if changed {
-				err = config.SaveConfig(cfg)
-				if err != nil {
-					return err
-				}
-
-				return nil
-			}
-
-			return fmt.Errorf("variable not found: %s", args[0])
 		}
 
 		return nil

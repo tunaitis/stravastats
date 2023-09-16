@@ -27,9 +27,23 @@ type DisplayConfig struct {
 	Activities []string
 }
 
-func GetValue(data interface{}, index string) (string, error) {
+func SetValue(config *Config, name string, value string) error {
+	if name == "Api.ClientId" {
+		config.Api.ClientId = value
+		return nil
+	}
 
+	if name == "Api.ClientSecret" {
+		config.Api.ClientSecret = value
+		return nil
+	}
+
+	return fmt.Errorf("variable not found: %s", name)
+}
+
+func GetValue(data interface{}, index string) (string, error) {
 	indexArray := strings.Split(index, ".")
+
 	r := reflect.ValueOf(data)
 	for _, i := range indexArray {
 		if r.FieldByName(i).Kind() == reflect.Struct {
@@ -43,7 +57,7 @@ func GetValue(data interface{}, index string) (string, error) {
 		return r.String(), nil
 	}
 
-	return "", fmt.Errorf("variable was not found: %s", index)
+	return "", fmt.Errorf("variable not found: %s", index)
 }
 
 func (c *ApiConfig) SetValue(name string, value string) {
