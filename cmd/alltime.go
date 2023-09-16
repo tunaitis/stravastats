@@ -30,7 +30,7 @@ var allTimeCmd = &cobra.Command{
 			return err
 		}
 
-		activityFilter, err := cmd.Flags().GetStringSlice("activities")
+		activityFilter, err := cmd.Flags().GetStringSlice("activity")
 		if err != nil {
 			return err
 		}
@@ -50,5 +50,5 @@ var allTimeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(allTimeCmd)
-	allTimeCmd.Flags().StringSliceP("activities", "a", nil, "filter activities")
+	allTimeCmd.Flags().StringSliceP("activity", "a", nil, "filter activities")
 }
