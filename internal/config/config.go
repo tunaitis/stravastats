@@ -1,8 +1,11 @@
 package config
 
 import (
+	"fmt"
 	"path"
+	"reflect"
 	"stravastats/internal/util"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -22,6 +25,29 @@ type ApiConfig struct {
 type DisplayConfig struct {
 	Name       string
 	Activities []string
+}
+
+func GetValue(data interface{}, index string) (string, error) {
+
+	indexArray := strings.Split(index, ".")
+	r := reflect.ValueOf(data)
+	for _, i := range indexArray {
+		if r.FieldByName(i).Kind() == reflect.Struct {
+			r = reflect.ValueOf(r.FieldByName(i).Interface())
+		} else {
+			r = r.FieldByName(i)
+		}
+	}
+
+	if r.IsValid() {
+		return r.String(), nil
+	}
+
+	return "", fmt.Errorf("variable was not found: %s", index)
+}
+
+func (c *ApiConfig) SetValue(name string, value string) {
+
 }
 
 func GetConfigPath() (string, error) {
