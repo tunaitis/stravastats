@@ -15,7 +15,7 @@ var allTimeCmd = &cobra.Command{
 	Use:   "all-time",
 	Short: "Show all-time stats",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cfg, err := config.ReadConfig()
+		_, err := config.ReadConfig()
 		if err != nil {
 			if errors.As(err, &viper.ConfigFileNotFoundError{}) {
 				fmt.Println("Config file not found, run `stravastats init` first.")
@@ -30,9 +30,13 @@ var allTimeCmd = &cobra.Command{
 			return err
 		}
 
-		activityFilter := stats.ActivityTypes
-		if len(cfg.Display.Activities) > 0 {
-			activityFilter = cfg.Display.Activities
+		activityFilter, err := cmd.Flags().GetStringSlice("activities")
+		if err != nil {
+			return err
+		}
+
+		if activityFilter == nil {
+			activityFilter = stats.ActivityTypes
 		}
 
 		err = view.AllTime(stats, activityFilter)
@@ -46,4 +50,5 @@ var allTimeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(allTimeCmd)
+	allTimeCmd.Flags().StringSliceP("activities", "a", nil, "filter activities")
 }
