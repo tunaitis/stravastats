@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/all-time.png" width="450" alt="default screenshot">
+  <img src="./assets/all-time.png" alt="default screenshot">
 </p>
 
 # stravastats
