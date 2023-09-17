@@ -1,8 +1,8 @@
+<img src="./assets/all-time.png" alt="default screenshot">
+
 # stravastats
 
 stravastats is a command line utility to display your personal Strava statistics in the terminal.
-
-<img src="./assets/all-time.png" alt="default screenshot">
 
 ## Installation
 
