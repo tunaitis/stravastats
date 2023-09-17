@@ -1,4 +1,4 @@
-<img src="./assets/all-time.png" alt="default screenshot">
+<img src="./assets/default.png" alt="default screenshot">
 
 # stravastats
 
