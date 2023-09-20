@@ -64,6 +64,28 @@ $ stravastats auth
 
 The auth command will open a new browser window where you will be redirected to the Strava OAuth authorisation page. After you have given your consent, Strava will redirect you back to stravastats' internal web server, which will retrieve the passed authorisation code and exchange it for an access token, which will be securely stored in a keychain and used to access the Strava API later. 
 
+## Usage
 
+```bash
+stravastats is a CLI utility to show your personal Strava statistics in the terminal
 
+Usage:
+  stravastats [command]
+
+Available Commands:
+  all-time    Show all-time stats
+  auth        Authorize stravastats to connect to Strava API on your behalf
+  cache       Manage stravastats cache
+  completion  Generate the autocompletion script for the specified shell
+  config      Get and set configuration properties
+  help        Help about any command
+  init        Create a configuration file
+
+Flags:
+      --debug     show debug information
+  -h, --help      help for stravastats
+  -v, --version   version for stravastats
+
+Use "stravastats [command] --help" for more information about a command.
+```
 
